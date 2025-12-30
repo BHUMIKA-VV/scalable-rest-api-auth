@@ -1,82 +1,117 @@
-# Scalable REST API with Authentication (Assignment)
+# Scalable REST API with Authentication
 
-Overview
--
-This repository contains a fullstack assignment implementing a scalable REST API with authentication and role-based access control plus a minimal frontend. The backend uses Node.js, Express, Sequelize (Postgres with an sqlite fallback for tests), JWT access tokens and rotating refresh tokens. The frontend is a small React/Vite stub.
+## 📖 Overview
+This project implements a scalable REST API with JWT-based authentication, role-based access control (RBAC), and a basic frontend UI for testing the APIs.
 
-Contents
--
-- **backend/** — API server, Sequelize models, auth, tests
-- **frontend/** — minimal React app scaffold
-- **docker-compose.yml** — Postgres, Redis and backend service
-- **SUBMISSION.md** — submission notes
+The backend is built using **Node.js**, **Express**, and **Sequelize** with **PostgreSQL** as the primary database. **SQLite** (in-memory) is used for testing. Authentication utilizes JWT access tokens with refresh token rotation. A minimal **React (Vite)** frontend is included to interact with the backend APIs.
 
-Quick Start (dev)
--
-1. Backend
 
-	 - Create an env file from the example:
-
-		 ```powershell
-		 cd "F:\Bhumika\sem 7\new1\Ass\backend"
-		 copy .env.example .env
-		 # edit .env to set DATABASE_URL, JWT_SECRET, REDIS_URL as needed
-		 npm install
-		 npm run dev
-		 ```
-
-	 - Run tests (uses sqlite in-memory):
-
-		 ```powershell
-		 npm test
-		 ```
-
-2. Frontend (dev)
-
-	 ```powershell
-	 cd "F:\Bhumika\sem 7\new1\Ass\frontend"
-	 npm install
-	 npm run dev
-	 ```
-
-Docker (compose)
--
-To run the full stack with Postgres and Redis via Docker Compose:
-
-```powershell
-cd "F:\Bhumika\sem 7\new1\Ass"
-docker-compose up --build
-# backend will be available on http://localhost:4000
+## 📂 Project Structure
+```text
+├── backend/            # Backend API (Authentication, RBAC, CRUD, Tests)
+├── frontend/           # Basic React UI
+├── docker-compose.yml  # Docker setup
+├── SUBMISSION.md       # Submission notes
+└── README.md           # Project documentation
 ```
 
-Environment variables (backend)
--
-- `DATABASE_URL` — Postgres connection string (example in `backend/.env.example`)
-- `JWT_SECRET` — secret used to sign JWT access tokens
-- `REDIS_URL` — optional, for token revocation / caching
-- `PORT` — backend port (default 4000)
+## 🛠 Tech Stack
 
-API (summary)
--
-- `POST /api/v1/auth/register` — register { email, password, role? }
-- `POST /api/v1/auth/login` — login { email, password } → { accessToken, refreshToken }
-- `POST /api/v1/auth/refresh` — rotate refresh token { refreshToken } → { accessToken, refreshToken }
-- `POST /api/v1/auth/logout` — revoke refresh token { refreshToken }
-- `GET /api/v1/tasks` — list tasks (requires `Authorization: Bearer <token>`) — admin sees all
-- `POST /api/v1/tasks` — create task (authenticated)
-- `GET|PUT|DELETE /api/v1/tasks/:id` — task operations (owner or admin)
+### Backend
+- Node.js & Express
+- Sequelize (ORM)
+- PostgreSQL (Primary DB)
+- SQLite (In-memory testing)
+- JWT (Authentication)
+- Redis (Optional for token revocation/caching)
 
-Notes
--
-- Tests are written with Jest + Supertest and run against an in-memory sqlite DB.
-- The current frontend is a minimal stub; you can expand it to call the API endpoints.
+### Frontend
+- React
+- Vite
+- JavaScript
 
-Contributing / Next steps
--
-- Add Redis-backed refresh-token revocation and caching for lists.
-- Harden validation with `express-validator` and improve logging.
+### Tools & DevOps
+- Docker & Docker Compose
+- Jest & Supertest (Testing suite)
 
-License
--
-MIT
+## ✨ Features
 
+### Backend
+- Secure Authentication: User registration, login, and password hashing (Bcrypt).
+- Token Management: JWT access and refresh token rotation.
+- Access Control: Role-based permissions (User vs. Admin).
+- Task Management: Full CRUD APIs for Task resources.
+- Clean Architecture: API versioning (/api/v1) and centralized error handling.
+- Validation: Robust input validation and automated test coverage.
+
+### Frontend
+- User registration and login flows.
+- JWT-protected dashboard.
+- Task CRUD operations with real-time API response handling.
+
+## 🚀 Setup Instructions
+
+### Backend
+Navigate to the folder: cd backend
+
+Create environment file: cp .env.example .env
+
+Install dependencies: npm install
+
+Start development server: npm run dev
+
+Run tests: npm test
+
+### Frontend
+Navigate to the folder: cd frontend
+
+Install dependencies: npm install
+
+Start development server: npm run dev
+
+The frontend will attempt to connect to the backend at http://localhost:4000.
+
+### Docker (Quick Start)
+To run the entire stack (DB, Backend, and Frontend) in containers:
+
+```bash
+docker-compose up --build
+```
+
+## ⚙️ Environment Variables
+The following variables should be defined in your .env file:
+
+DATABASE_URL: PostgreSQL connection string
+
+JWT_SECRET: Secret key for JWT signing
+
+REDIS_URL: Redis connection string (optional)
+
+PORT: Server port (default: 4000)
+
+## 🛣 API Endpoints
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/v1/auth/register | Register a new user |
+| POST | /api/v1/auth/login | Login & receive tokens |
+| POST | /api/v1/auth/refresh | Rotate refresh token |
+| POST | /api/v1/auth/logout | Invalidate current session |
+
+### Tasks (Protected)
+Header: Authorization: Bearer <accessToken>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/v1/tasks | Get all user tasks |
+| POST | /api/v1/tasks | Create a new task |
+| GET | /api/v1/tasks/:id | Get specific task |
+| PUT | /api/v1/tasks/:id | Update task details |
+| DELETE | /api/v1/tasks/:id | Delete a task |
+
+## 📈 Scalability Notes
+- Modular Structure: Code is organized by feature for easy scaling into microservices.
+- Versioning: API is versioned to allow backward compatibility.
+- Caching Ready: Redis support included for high-performance token checks.
+- Testing: Uses SQLite for fast, isolated test execution without database side effects.
